@@ -3,8 +3,7 @@ DOMAIN_NAME="route53.fffdev.com"
 HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
 
 main(){
-    IP_LIST_UPDATE=$(updated_ip_list)
-    echo $IP_LIST_UPDATE
+    IP_LIST_UPDATE=$(updated_ip_list)    
     update_route53_record ${IP_LIST_UPDATE}
 }
 
@@ -40,6 +39,7 @@ updated_ip_list(){
 }
 
 update_route53_record(){   
+    echo "IP_LIST_UPDATE: $1"
     JSON_REQUEST='{
               "Comment": "Delete the A record set",
               "Changes": [
@@ -49,7 +49,7 @@ update_route53_record(){
                     "Name": '\"$DOMAIN_NAME\"',
                     "Type": "A",
                     "TTL": 300,
-                    "ResourceRecords": '$1'
+                    "ResourceRecords": '.$1.'
                   }
                 }
               ]
