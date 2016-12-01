@@ -4,6 +4,7 @@ HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
 
 main(){
     IP_LIST_UPDATE=$(updated_ip_list)
+    echo $IP_LIST_UPDATE
     update_route53_record ${IP_LIST_UPDATE}
 }
 
