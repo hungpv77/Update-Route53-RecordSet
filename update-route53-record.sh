@@ -1,8 +1,10 @@
 #!/bin/bash
 DOMAIN_NAME="route53.fffdev.com"
+HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
 
 main(){
-    add_element
+    IP_LIST_UPDATE=$(updated_ip_list)
+    update_route53_record ${IP_LIST_UPDATE}
 }
 
 # Get IP List of $DOMAIN_NAME from route53
@@ -19,7 +21,7 @@ get_ip_list(){
     echo $RECORD_SET_JSON    
 }
 
-add_element(){
+updated_ip_list(){
     # Get public IP of running instance
     # IP=$( curl http://169.254.169.254/latest/meta-data/public-ipv4 )
     IP="192.168.10.1"
@@ -36,13 +38,7 @@ add_element(){
     echo $IP_LIST
 }
 
-update_route53_record(){
-    IP=$( curl http://169.254.169.254/latest/meta-data/public-ipv4 )
-    echo "IP to delete: $IP"
-    IP2="54.175.56.142"
-
-    HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
-
+update_route53_record(){   
     JSON_REQUEST='{
               "Comment": "Delete the A record set",
               "Changes": [
@@ -52,15 +48,7 @@ update_route53_record(){
                     "Name": '\"$DOMAIN_NAME\"',
                     "Type": "A",
                     "TTL": 300,
-                    "ResourceRecords": [
-                      {
-                        "Value": '\"$IP\"'
-                      },
-                      {
-                        "Value": '\"$IP2\"'
-                      }
-
-                    ]
+                    "ResourceRecords": '$1'
                   }
                 }
               ]
@@ -68,9 +56,6 @@ update_route53_record(){
     echo $JSON_REQUEST
     echo "Calling API..."
     aws route53 change-resource-record-sets  --hosted-zone-id "$HOSTED_ZONE_ID" --change-batch "$JSON_REQUEST"
-
 }
-
-
 main
 exit 0
