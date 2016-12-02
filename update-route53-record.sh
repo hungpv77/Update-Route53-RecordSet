@@ -5,7 +5,7 @@ HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
 main(){
     IP_LIST_UPDATE=$(updated_ip_list)
     echo "DEBUGGING: ip list updated: $IP_LIST_UPDATE"
-    update_route53_record ${IP_LIST_UPDATE}
+    update_route53_record $IP_LIST_UPDATE
 }
 
 # Get IP List of $DOMAIN_NAME from route53
