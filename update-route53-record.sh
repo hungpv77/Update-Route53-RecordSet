@@ -2,10 +2,8 @@
 DOMAIN_NAME="route53.fffdev.com"
 HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
 
-main(){
-    IP_LIST_UPDATE=$(updated_ip_list)
-    echo "DEBUGGING: ip list updated: $IP_LIST_UPDATE"
-    update_route53_record $IP_LIST_UPDATE
+main(){    
+    update_route53_record 
 }
 
 # Get IP List of $DOMAIN_NAME from route53
@@ -22,7 +20,24 @@ get_ip_list(){
     echo $RECORD_SET_JSON
 }
 
-updated_ip_list(){
+# updated_ip_list(){
+#     # Get public IP of running instance
+#     # IP=$( curl http://169.254.169.254/latest/meta-data/public-ipv4 )
+#     IP="192.168.10.1"
+
+#     # Get IP list from Route53 by invoking get_ip_list
+#     IP_LIST=$(get_ip_list)    
+
+#     # Get length of json array
+#     LENGTH=$(echo $IP_LIST | jq '. | length')
+
+#     # Add one element to last array
+#     IP_LIST=$(echo $IP_LIST | jq '.['$LENGTH'].Value |= .+ '\"$IP\"'')
+
+#     echo $IP_LIST
+# }
+
+update_route53_record(){
     # Get public IP of running instance
     # IP=$( curl http://169.254.169.254/latest/meta-data/public-ipv4 )
     IP="192.168.10.1"
@@ -35,29 +50,24 @@ updated_ip_list(){
 
     # Add one element to last array
     IP_LIST=$(echo $IP_LIST | jq '.['$LENGTH'].Value |= .+ '\"$IP\"'')
-
-    echo $IP_LIST
-}
-
-update_route53_record(){
-    echo "IP_LIST_UPDATE: $1"
-    # JSON_REQUEST='{
-    #           "Comment": "Delete the A record set",
-    #           "Changes": [
-    #             {
-    #               "Action": "UPSERT",
-    #               "ResourceRecordSet": {
-    #                 "Name": '\"$DOMAIN_NAME\"',
-    #                 "Type": "A",
-    #                 "TTL": 300,
-    #                 "ResourceRecords": '$1'
-    #               }
-    #             }
-    #           ]
-    #         }'
-    # echo $JSON_REQUEST
-    # echo "Calling API..."
-    # aws route53 change-resource-record-sets  --hosted-zone-id "$HOSTED_ZONE_ID" --change-batch "$JSON_REQUEST"
+    
+    JSON_REQUEST='{
+              "Comment": "Delete the A record set",
+              "Changes": [
+                {
+                  "Action": "UPSERT",
+                  "ResourceRecordSet": {
+                    "Name": '\"$DOMAIN_NAME\"',
+                    "Type": "A",
+                    "TTL": 300,
+                    "ResourceRecords": '$IP_LIST'
+                  }
+                }
+              ]
+            }'
+    echo $JSON_REQUEST
+    echo "Calling API..."
+    aws route53 change-resource-record-sets  --hosted-zone-id "$HOSTED_ZONE_ID" --change-batch "$JSON_REQUEST"
 }
 main
 exit 0
