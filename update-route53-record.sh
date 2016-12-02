@@ -4,7 +4,8 @@ HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
 
 main(){
     IP_LIST_UPDATE=$(updated_ip_list)
-    update_route53_record ${IP_LIST_UPDATE}
+    echo "DEBUGGING: ip list updated: $IP_LIST_UPDATE"
+    #update_route53_record ${IP_LIST_UPDATE}
 }
 
 # Get IP List of $DOMAIN_NAME from route53
@@ -27,17 +28,15 @@ updated_ip_list(){
     IP="192.168.10.1"
 
     # Get IP list from Route53 by invoking get_ip_list
-    IP_LIST=$(get_ip_list)
-
-    echo "DEBUGGING: IP_LIST: $IP_LIST"
+    IP_LIST=$(get_ip_list)    
 
     # Get length of json array
-    #LENGTH=$(echo $IP_LIST | jq '. | length')
+    LENGTH=$(echo $IP_LIST | jq '. | length')
 
     # Add one element to last array
-    #IP_LIST=$(echo $IP_LIST | jq '.['$LENGTH'].Value |= .+ "'$IP'"'
+    IP_LIST=$(echo $IP_LIST | jq '.['$LENGTH'].Value |= .+ '\"$IP\"'')
 
-    #echo $IP_LIST
+    echo $IP_LIST
 }
 
 update_route53_record(){
