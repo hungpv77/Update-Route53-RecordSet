@@ -41,23 +41,23 @@ updated_ip_list(){
 
 update_route53_record(){
     echo "IP_LIST_UPDATE: $1"
-    JSON_REQUEST='{
-              "Comment": "Delete the A record set",
-              "Changes": [
-                {
-                  "Action": "UPSERT",
-                  "ResourceRecordSet": {
-                    "Name": '\"$DOMAIN_NAME\"',
-                    "Type": "A",
-                    "TTL": 300,
-                    "ResourceRecords": '$1'
-                  }
-                }
-              ]
-            }'
-    echo $JSON_REQUEST
-    echo "Calling API..."
-    aws route53 change-resource-record-sets  --hosted-zone-id "$HOSTED_ZONE_ID" --change-batch "$JSON_REQUEST"
+    # JSON_REQUEST='{
+    #           "Comment": "Delete the A record set",
+    #           "Changes": [
+    #             {
+    #               "Action": "UPSERT",
+    #               "ResourceRecordSet": {
+    #                 "Name": '\"$DOMAIN_NAME\"',
+    #                 "Type": "A",
+    #                 "TTL": 300,
+    #                 "ResourceRecords": '$1'
+    #               }
+    #             }
+    #           ]
+    #         }'
+    # echo $JSON_REQUEST
+    # echo "Calling API..."
+    # aws route53 change-resource-record-sets  --hosted-zone-id "$HOSTED_ZONE_ID" --change-batch "$JSON_REQUEST"
 }
 main
 exit 0
