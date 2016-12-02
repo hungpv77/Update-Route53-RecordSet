@@ -41,7 +41,7 @@ updated_ip_list(){
 
 update_route53_record(){   
     JSON_REQUEST='{
-              "Comment": "Delete the A record set",
+              "Comment": "Update the A record set",
               "Changes": [
                 {
                   "Action": "UPSERT",
@@ -54,9 +54,12 @@ update_route53_record(){
                 }
               ]
             }'
-    echo $JSON_REQUEST
-    echo "Calling API..."
+    #echo $JSON_REQUEST
+    #echo "Calling API..."
     aws route53 change-resource-record-sets  --hosted-zone-id "$HOSTED_ZONE_ID" --change-batch "$JSON_REQUEST"
+
+    # write to log file
+    echo "aws route53 change-resource-record-sets  --hosted-zone-id \"$HOSTED_ZONE_ID\" --change-batch \"$JSON_REQUEST\"" | sudo tee /var/log/update-route53.log
 }
 main
 exit 0
