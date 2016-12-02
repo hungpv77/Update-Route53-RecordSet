@@ -2,8 +2,9 @@
 DOMAIN_NAME="route53.fffdev.com"
 HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
 
-main(){    
-    update_route53_record 
+main(){
+    UPDATED_IP_LIST=$(updated_ip_list)    
+    update_route53_record "$UPDATED_IP_LIST"
 }
 
 # Get IP List of $DOMAIN_NAME from route53
@@ -20,24 +21,7 @@ get_ip_list(){
     echo $RECORD_SET_JSON
 }
 
-# updated_ip_list(){
-#     # Get public IP of running instance
-#     # IP=$( curl http://169.254.169.254/latest/meta-data/public-ipv4 )
-#     IP="192.168.10.1"
-
-#     # Get IP list from Route53 by invoking get_ip_list
-#     IP_LIST=$(get_ip_list)    
-
-#     # Get length of json array
-#     LENGTH=$(echo $IP_LIST | jq '. | length')
-
-#     # Add one element to last array
-#     IP_LIST=$(echo $IP_LIST | jq '.['$LENGTH'].Value |= .+ '\"$IP\"'')
-
-#     echo $IP_LIST
-# }
-
-update_route53_record(){
+updated_ip_list(){
     # Get public IP of running instance
     # IP=$( curl http://169.254.169.254/latest/meta-data/public-ipv4 )
     IP="192.168.10.1"
@@ -50,7 +34,11 @@ update_route53_record(){
 
     # Add one element to last array
     IP_LIST=$(echo $IP_LIST | jq '.['$LENGTH'].Value |= .+ '\"$IP\"'')
-    
+
+    echo $IP_LIST
+}
+
+update_route53_record(){   
     JSON_REQUEST='{
               "Comment": "Delete the A record set",
               "Changes": [
@@ -60,7 +48,7 @@ update_route53_record(){
                     "Name": '\"$DOMAIN_NAME\"',
                     "Type": "A",
                     "TTL": 300,
-                    "ResourceRecords": '$IP_LIST'
+                    "ResourceRecords": '$1'
                   }
                 }
               ]
