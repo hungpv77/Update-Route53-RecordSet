@@ -29,6 +29,8 @@ updated_ip_list(){
     # Get IP list from Route53 by invoking get_ip_list
     IP_LIST=$(get_ip_list)
 
+    echo "DEBUG: IP_LIST: $IP_LIST"
+
     # Get length of json array
     LENGTH=$(echo $IP_LIST | jq '. | length')
 
