@@ -4,9 +4,8 @@ DOMAIN_NAME="route53.fffdev.com"
 HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
 
 main(){
-    # UPDATED_IP_LIST=$(updated_ip_list)    
-    # update_route53_record "$UPDATED_IP_LIST"
-    updated_ip_list
+    UPDATED_IP_LIST=$(updated_ip_list)    
+    update_route53_record "$UPDATED_IP_LIST"    
 }
 
 # Get IP List of $DOMAIN_NAME from route53
