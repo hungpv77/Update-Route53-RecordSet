@@ -13,14 +13,14 @@ main(){
 get_ip_list(){
     RECORD_SET_JSON=$( sudo aws route53 list-resource-record-sets --hosted-zone-id Z1986QIYBBYSUJ --query "ResourceRecordSets[?Name == '$DOMAIN_NAME.']")    
 
-    # #Remove the first and last character in string  to convert json array to json object
-    # RECORD_SET_JSON=${RECORD_SET_JSON:1:-1}
+    #Remove the first and last character in string  to convert json array to json object
+    RECORD_SET_JSON=${RECORD_SET_JSON:1:-1}
 
-    # # Need to install jq to parse json http://xmodulo.com/how-to-parse-json-string-via-command-line-on-linux.html
-    # # Get value of ResourceRecords
-    # RECORD_SET_JSON=$( echo $RECORD_SET_JSON | jq -r '.ResourceRecords' )
+    # Need to install jq to parse json http://xmodulo.com/how-to-parse-json-string-via-command-line-on-linux.html
+    # Get value of ResourceRecords
+    RECORD_SET_JSON=$( echo $RECORD_SET_JSON | jq -r '.ResourceRecords' )
     
-    # echo $RECORD_SET_JSON
+    echo $RECORD_SET_JSON
 }
 
 updated_ip_list(){      
