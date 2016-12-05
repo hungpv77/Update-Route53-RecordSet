@@ -6,14 +6,12 @@ HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
 main(){
     # UPDATED_IP_LIST=$(updated_ip_list)    
     # update_route53_record "$UPDATED_IP_LIST"
-    get_ip_list
+    updated_ip_list
 }
 
 # Get IP List of $DOMAIN_NAME from route53
 get_ip_list(){
-    RECORD_SET_JSON=$( aws route53 list-resource-record-sets --hosted-zone-id Z1986QIYBBYSUJ --query "ResourceRecordSets[?Name == '$DOMAIN_NAME.']")
-    echo "DEBUGGING RECORD_SET_JSON return from Route53: $RECORD_SET_JSON" | tee /var/log/update-route53.log
-
+    RECORD_SET_JSON=$( sudo aws route53 list-resource-record-sets --hosted-zone-id Z1986QIYBBYSUJ --query "ResourceRecordSets[?Name == '$DOMAIN_NAME.']")    
 
     # #Remove the first and last character in string  to convert json array to json object
     # RECORD_SET_JSON=${RECORD_SET_JSON:1:-1}
