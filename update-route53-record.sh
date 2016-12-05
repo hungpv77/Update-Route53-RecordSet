@@ -19,22 +19,30 @@ get_ip_list(){
     # Get value of ResourceRecords
     RECORD_SET_JSON=$( echo $RECORD_SET_JSON | jq -r '.ResourceRecords' )
 
+    # Debugging
+    echo "DEBUGGING: RECORD_SET_JSON From Route53 return: $RECORD_SET_JSON" | sudo tee  /var/log/update-route53.log
+    USER=$(sh -c 'whoami')
+    echo "DEBUGGING: : $USER" >> /var/log/update-route53.log
+
     echo $RECORD_SET_JSON
 }
 
 updated_ip_list(){
     # Get public IP of running instance
-    IP=$( curl http://169.254.169.254/latest/meta-data/public-ipv4 )
-    # IP="192.168.10.1"
-
+    IP=$( curl http://169.254.169.254/latest/meta-data/public-ipv4 ) 
+    echo "DEBUGGING IP: $IP" >> /var/log/update-route53.log
+   
     # Get IP list from Route53 by invoking get_ip_list
-    IP_LIST=$(get_ip_list)    
+    IP_LIST=$(get_ip_list)
+    echo "DEBUGGING IP_LIST return from Route53: $IP_LIST" >> /var/log/update-route53.log
+    
 
     # Get length of json array
     LENGTH=$(echo $IP_LIST | jq '. | length')
 
     # Add one element to last array
     IP_LIST=$(echo $IP_LIST | jq '.['$LENGTH'].Value |= .+ '\"$IP\"'')
+    echo "DEBUGGING IP_LIST after added one element: $IP_LIST" >> /var/log/update-route53.log
 
     echo $IP_LIST
 }
