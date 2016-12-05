@@ -2,6 +2,7 @@
 
 DOMAIN_NAME="route53.fffdev.com"
 HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
+DEBUG_TEXT=""
 
 main(){
     UPDATED_IP_LIST=$(updated_ip_list)    
@@ -18,6 +19,7 @@ get_ip_list(){
     # Need to install jq to parse json http://xmodulo.com/how-to-parse-json-string-via-command-line-on-linux.html
     # Get value of ResourceRecords
     RECORD_SET_JSON=$( echo $RECORD_SET_JSON | jq -r '.ResourceRecords' )
+    DEBUG_TEXT="$DEBUG_TEXT DEBUGGING: RECORD_SET_JSON = $RECORD_SET_JSON"
     
     echo $RECORD_SET_JSON
 }
@@ -25,11 +27,11 @@ get_ip_list(){
 updated_ip_list(){      
     # Get IP list from Route53 by invoking get_ip_list
     IP_LIST=$(get_ip_list)
-    echo "DEBUGGING IP_LIST return from Route53: $IP_LIST" | tee /var/log/update-route53.log
+    DEBUG_TEXT="$DEBUG_TEXT DEBUGGING: IP_LIST (return from Route53) = $IP_LIST"    
 
     # Get public IP of running instance
     IP=$( curl http://169.254.169.254/latest/meta-data/public-ipv4 ) 
-    echo "DEBUGGING IP: $IP" >> /var/log/update-route53.log
+    DEBUG_TEXT="$DEBUG_TEXT DEBUGGING: IP = $IP"    
     
     # Get length of json array
     LENGTH=$(echo $IP_LIST | jq '. | length')
@@ -44,10 +46,10 @@ updated_ip_list(){
 
     # done
 
-
     # Add one element to last array
     IP_LIST=$(echo $IP_LIST | jq '.['$LENGTH'].Value |= .+ '\"$IP\"'')
-    echo "DEBUGGING IP_LIST after added one element: $IP_LIST" >> /var/log/update-route53.log
+    DEBUG_TEXT="$DEBUG_TEXT DEBUGGING: IP_LIST (after added one element) = $IP_LIST"
+    #echo "DEBUGGING IP_LIST after added one element: $IP_LIST" >> /var/log/update-route53.log
 
     echo $IP_LIST
 }
@@ -71,8 +73,10 @@ update_route53_record(){
     #echo "Calling API..."
     sudo aws route53 change-resource-record-sets  --hosted-zone-id "$HOSTED_ZONE_ID" --change-batch "$JSON_REQUEST"
 
+    DEBUG_TEXT="$DEBUG_TEXT DEBUGGING: aws route53 change-resource-record-sets  --hosted-zone-id \"$HOSTED_ZONE_ID\" --change-batch \"$JSON_REQUEST\""
+
     # write to log file
-    echo "aws route53 change-resource-record-sets  --hosted-zone-id \"$HOSTED_ZONE_ID\" --change-batch \"$JSON_REQUEST\""  >> /var/log/update-route53.log
+    echo "$DEBUG_TEXT"  | tee /var/log/update-route53.log
 }
 main
 exit 0
