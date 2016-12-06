@@ -65,7 +65,7 @@ update_route53_record(){
     DEBUG_TEXT="$DEBUG_TEXT DEBUGGING: aws route53 change-resource-record-sets  --hosted-zone-id \"$HOSTED_ZONE_ID\" --change-batch \"$JSON_REQUEST\""
 
     # write to log file
-    echo "$DEBUG_TEXT"  | tee /var/log/update-route53.log
+    echo "$DEBUG_TEXT"  | tee /var/log/del-ip-route53.log
 }
 main
 exit 0
