@@ -1,8 +1,9 @@
 #!/bin/bash
 main(){
-    install_util_tools
+    #install_util_tools
     install_aws_cli
     install_jq_lib
+    install_run_script
 }
 
 install_util_tools() {
@@ -42,6 +43,24 @@ install_jq_lib(){
     wget http://stedolan.github.io/jq/download/linux64/jq
     sudo chmod +x ./jq
     sudo cp jq /usr/bin
+}
+
+install_run_script(){
+    #Install the script runs at boot time
+    if [ -f "update-route53-record.sh" ]; then
+        sudo cp update-route53-record.sh /etc/init.d/
+        sudo ln -s /etc/init.d/update-route53-record.sh /etc/rc6.d/K02update-route53-record.sh
+    else
+        echo "ERROR: update-route53-record.sh is not exist."  
+    fi
+
+    #Install the script runs at shutdown time
+    if [ -f "update-route53-record.sh" ]; then
+        sudo cp delete-route53-record.sh /etc/init.d/
+        sudo ln -s /etc/init.d/delete-route53-record.sh /etc/rc0.d/K02update-route53-record.sh
+    else
+        echo "ERROR: delete-route53-record.sh is not exist."  
+    fi 
 }
 
 main
