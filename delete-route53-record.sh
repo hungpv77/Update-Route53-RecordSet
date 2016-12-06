@@ -24,30 +24,19 @@ get_ip_list(){
     echo $RECORD_SET_JSON
 }
 
-updated_ip_list(){      
+delete_ip_item(){      
     # Get IP list from Route53 by invoking get_ip_list
     IP_LIST=$(get_ip_list)
     #DEBUG_TEXT="$DEBUG_TEXT DEBUGGING: IP_LIST (return from Route53) = $IP_LIST"    
 
     # Get public IP of running instance
     IP=$( curl http://169.254.169.254/latest/meta-data/public-ipv4 ) 
-    #DEBUG_TEXT="$DEBUG_TEXT DEBUGGING: IP = $IP"    
+    #DEBUG_TEXT="$DEBUG_TEXT DEBUGGING: IP = $IP"
     
-    # Get length of json array
-    LENGTH=$(echo $IP_LIST | jq '. | length')
-
-    # while is length of IP is 0
-    # while [ -z "$IP" ]
-    # do
-    #     # sleep 5 second to wait network card drivers are loaded
-    #     sleep 5
-    #     IP=$( curl http://169.254.169.254/latest/meta-data/public-ipv4 )
-    #     echo "IP: $IP" >> /var/log/update-route53.log
-
-    # done
-
-    # Add one element to last array
-    IP_LIST=$(echo $IP_LIST | jq '.['$LENGTH'].Value |= .+ '\"$IP\"'')
+    # Convert IP to json array [{"Value": "192.168.10.1"}]
+    IP='[{"Value": '\"$IP\"'}]'
+    # Remove one element from json array
+    IP_LIST=$(echo $IP_LIST | jq ".-  $IP")
     #DEBUG_TEXT="$DEBUG_TEXT DEBUGGING: IP_LIST (after added one element) = $IP_LIST"
     #echo "DEBUGGING IP_LIST after added one element: $IP_LIST" >> /var/log/update-route53.log
 
