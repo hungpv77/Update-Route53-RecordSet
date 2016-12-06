@@ -20,22 +20,22 @@ install_aws_cli(){
     mkdir ~/.aws
     echo "Configuring " 
     echo "[default]
-    aws_access_key_id = AKIAJ3TL62KOCDCT4GNQ
-    aws_secret_access_key = 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" | sudo tee ~/.aws/credentials
+aws_access_key_id = AKIAJ3TL62KOCDCT4GNQ
+aws_secret_access_key = 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" | sudo tee ~/.aws/credentials
 
     echo "[default]
-    output = json
-    region = us-east-1" | sudo tee ~/.aws/config
+output = json
+region = us-east-1" | sudo tee ~/.aws/config
 
     sudo mkdir /root/.aws
     echo "Configuring " 
     echo "[default]
-    aws_access_key_id = AKIAJ3TL62KOCDCT4GNQ
-    aws_secret_access_key = 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" | sudo tee /root/.aws/credentials
+aws_access_key_id = AKIAJ3TL62KOCDCT4GNQ
+aws_secret_access_key = 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" | sudo tee /root/.aws/credentials
 
     echo "[default]
-    output = json
-    region = us-east-1" | sudo tee root/.aws/config
+output = json
+region = us-east-1" | sudo tee root/.aws/config
 
 }
 
@@ -57,7 +57,7 @@ install_run_script(){
     #Install the script runs at shutdown time
     if [ -f "update-route53-record.sh" ]; then
         sudo cp delete-route53-record.sh /etc/init.d/
-        sudo ln -s /etc/init.d/delete-route53-record.sh /etc/rc0.d/K02update-route53-record.sh
+        sudo ln -s /etc/init.d/delete-route53-record.sh /etc/rc0.d/K99delete-route53-record.sh
     else
         echo "ERROR: delete-route53-record.sh is not exist."  
     fi 
