@@ -5,8 +5,8 @@ HOSTED_ZONE_ID="Z1986QIYBBYSUJ"
 DEBUG_TEXT=""
 
 main(){
-    UPDATED_IP_LIST=$(updated_ip_list)    
-    update_route53_record "$UPDATED_IP_LIST"    
+    IP_LIST=$(delete_ip_item)    
+    update_route53_record "$IP_LIST"    
 }
 
 # Get IP List of $DOMAIN_NAME from route53
