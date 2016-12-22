@@ -20,8 +20,8 @@ install_aws_cli(){
     mkdir ~/.aws
     echo "Configuring " 
     echo "[default]
-aws_access_key_id = AKIAJ3TL62KOCDCT4GNQ
-aws_secret_access_key = s1Xml6LgC4HlayiGLssWTtXxAH5AU3wGtzUdDzYi" | sudo tee ~/.aws/credentials
+aws_access_key_id = <YOUR_ACCESS_KEY_ID>
+aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>" | sudo tee ~/.aws/credentials
 
     echo "[default]
 output = json
@@ -30,8 +30,8 @@ region = us-east-1" | sudo tee ~/.aws/config
     sudo mkdir /root/.aws
     echo "Configuring " 
     echo "[default]
-aws_access_key_id = AKIAJ3TL62KOCDCT4GNQ
-aws_secret_access_key = s1Xml6LgC4HlayiGLssWTtXxAH5AU3wGtzUdDzYi" | sudo tee /root/.aws/credentials
+aws_access_key_id = <YOUR_ACCESS_KEY_ID>
+aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>" | sudo tee /root/.aws/credentials
 
     echo "[default]
 output = json
@@ -49,7 +49,7 @@ install_run_script(){
     #Install the script runs at boot time
     if [ -f "update-route53-record.sh" ]; then
         sudo cp update-route53-record.sh /etc/init.d/
-        sudo ln -s /etc/init.d/update-route53-record.sh /etc/rc6.d/K02update-route53-record.sh
+        sudo ln -s /etc/init.d/update-route53-record.sh /etc/rc6.d/K02update-route53-record.sh        
     else
         echo "ERROR: update-route53-record.sh is not exist."  
     fi
